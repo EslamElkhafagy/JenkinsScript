@@ -14,7 +14,7 @@ public class Script {
 	static ArrayList<File> files = new ArrayList<>();
 	static byte current=0; // to know current method is get all branches
 	static ArrayList<String> branchesName= new ArrayList<>();
-	static String path="//media//elkhafagy//Elkhafagy//TestJenkins//AskFM";
+	static String path="//media//elkhafagy//Elkhafagy//Elkhafagy//special//VFES-DXL-Common";
 
 
 
@@ -53,7 +53,7 @@ public class Script {
 	     public static void renameJenkinsFile() {
 	    	 int count=0;
 	    	 for (int i = 0; i < files.size(); i ++){
-	    		 if(files.get(i).getName().equals("jenkinsfile"))
+	    		 if(files.get(i).getName().equalsIgnoreCase("jenkinsfile"))
 	    	        files.get(i).renameTo(new File(files.get(i).getPath() + "1"));
 //	    	 System.out.println(files.get(i).getPath());
 	    	 }
@@ -129,7 +129,7 @@ public class Script {
 	
 	 	public static void gitCeckout(Path directory,String branchName) throws IOException, InterruptedException {
 	 		current=0;
-	 		if(branchName.equals("* master"))
+	 		if(branchName.equals("* master")||branchName.contains("*"))
 	 		runCommand(directory, "git", "checkout","master");
 	 		else
 	 		runCommand(directory, "git", "checkout",branchName);
