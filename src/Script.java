@@ -14,7 +14,7 @@ public class Script {
 	static ArrayList<File> files = new ArrayList<>();
 	static byte current=0; // to know current method is get all branches
 	static ArrayList<String> branchesName= new ArrayList<>();
-	static String path="//media//elkhafagy//Elkhafagy//Elkhafagy//special//VFES-DXL-Common";
+	static String path="//media//elkhafagy//Elkhafagy//TestJenkins//AskFM";//
 
 
 
@@ -53,31 +53,30 @@ public class Script {
 	     public static void renameJenkinsFile() {
 	    	 int count=0;
 	    	 for (int i = 0; i < files.size(); i ++){
-	    		 if(files.get(i).getName().equalsIgnoreCase("jenkinsfile"))
-	    	        files.get(i).renameTo(new File(files.get(i).getPath() + "1"));
+	    		 if(files.get(i).getName().startsWith("jenkinsfile"))
+	    	        files.get(i).renameTo(new File(files.get(i).getPath() + "8787"));
 //	    	 System.out.println(files.get(i).getPath());
 	    	 }
 	     }
 	   
 	     
-	     /*
-	      * Need on this method to add two methods but need password :( 
-	      * 1) git fetch 
-	      * 2) git push
-	      * 
-	      * */
+	     
 	     public static void runJenkinsScript() throws IOException, InterruptedException{
 		 		Path directory = Paths.get(path);
 		 		
-		 		
 		 		gitAllBranches(directory);
 	    	 
-		 		for(String branchName:branchesName) {
+		 		for(int i=0; i<branchesName.size();i++) {
+		 			String s=branchesName.get(i).replaceAll("[*\\s]+","");
 		 			
-		 			gitCeckout(directory, branchName);
+		 			System.out.println("***************************");
+		 			System.out.println("="+s);
+		 			gitCeckout(directory, s);
+		 			gitPull(directory,s);
 		 			listAllFiles(path); // for rename Jenkins file
 		 			gitStage(directory); // git add .
-		 			gitCommit(directory, "change jenkins name");
+		 			gitCommit(directory, "change jenkins name "+i);
+		 			gitPush(directory,s);
 		 			
 		 		}
 	    	 
@@ -103,7 +102,7 @@ public class Script {
 	 		Files.write(directory.resolve("example.txt"), new byte[0]);
 	 		gitStage(directory);
 	 		gitCommit(directory, "Add example.txt");
-	 		gitPush(directory);
+//	 		gitPush(directory);
 	 	}
 
 	 	public static void gitInit(Path directory) throws IOException, InterruptedException {
@@ -111,15 +110,18 @@ public class Script {
 	 	}
 
 	 	public static void gitStage(Path directory) throws IOException, InterruptedException {
-	 		runCommand(directory, "git", "add", "-A");
+	 		runCommand(directory, "git", "add", ".");
 	 	}
 
 	 	public static void gitCommit(Path directory, String message) throws IOException, InterruptedException {
 	 		runCommand(directory, "git", "commit", "-m", message);
 	 	}
 
-	 	public static void gitPush(Path directory) throws IOException, InterruptedException {
-	 		runCommand(directory, "git", "push");
+	 	public static void gitPush(Path directory,String branName) throws IOException, InterruptedException {
+	 		runCommand(directory, "git", "push","origin",branName);
+	 	}
+	 	public static void gitPull(Path directory,String branName) throws IOException, InterruptedException {
+	 		runCommand(directory, "git", "pull","origin",branName);
 	 	}
 	 	
 	 	public static void gitAllBranches(Path directory) throws IOException, InterruptedException {
@@ -129,9 +131,7 @@ public class Script {
 	
 	 	public static void gitCeckout(Path directory,String branchName) throws IOException, InterruptedException {
 	 		current=0;
-	 		if(branchName.equals("* master")||branchName.contains("*"))
-	 		runCommand(directory, "git", "checkout","master");
-	 		else
+	 		
 	 		runCommand(directory, "git", "checkout",branchName);
 
 	 	}
